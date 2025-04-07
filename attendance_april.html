@@ -1,0 +1,142 @@
+attendance_april.HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>April Attendance</title>
+    <style>
+        /* Permanent Dark Mode */
+        body { 
+            font-family: 'Arial', sans-serif; 
+            margin: 20px; 
+            background-color: #121212; 
+            color: white; 
+            text-align: center;
+        }
+        
+        h2 { 
+            font-size: 28px; 
+            text-shadow: 2px 2px 10px cyan; 
+        }
+
+        /* Attendance Table */
+        table { 
+            width: 80%; 
+            margin: 20px auto; 
+            border-collapse: collapse; 
+            box-shadow: 0px 0px 15px rgba(0, 255, 255, 0.5);
+        }
+        
+        th, td { 
+            border: 1px solid cyan; 
+            padding: 10px; 
+            text-align: center; 
+            font-size: 18px;
+        }
+        
+        th { 
+            background-color: #1e1e1e; 
+            color: cyan; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+        }
+
+        td { background-color: #222; }
+
+        /* Hover Effect */
+        tr:hover { background-color: rgba(0, 255, 255, 0.2); }
+
+        /* Checkbox Styling */
+        input[type="checkbox"] {
+            transform: scale(1.3);
+            cursor: pointer;
+            accent-color: cyan;
+        }
+
+        /* Links & Buttons */
+        a, button { 
+            display: inline-block; 
+            margin: 20px auto; 
+            text-decoration: none;
+            font-size: 18px; 
+            color: white;
+            padding: 10px 20px; 
+            border-radius: 5px; 
+            background: linear-gradient(135deg, cyan, blue);
+            border: none;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        a:hover, button:hover { 
+            transform: scale(1.1); 
+            box-shadow: 0px 0px 15px cyan;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>April Attendance</h2>
+    
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>✅Present</th>
+            <th>❌ Absent</th>
+        </tr>
+        <tbody id="attendance-table"></tbody>
+    </table>
+
+    <!-- Navigation -->
+    <a href="attendance_march.html">Go to March</a>
+    <button onclick="goHome()">🏠</button>
+
+    <script>
+        function generateAttendance(startDate, endDate) {
+            let tableBody = document.getElementById("attendance-table");
+            let currentDate = new Date(startDate);
+
+            while (currentDate <= endDate) {
+                let day = currentDate.getDay();
+                if (day !== 0 && day !== 6) { // Exclude Saturdays (6) and Sundays (0)
+                    let formattedDate = currentDate.toISOString().split('T')[0];
+                    let savedData = localStorage.getItem(formattedDate);
+                    
+                    let row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${formattedDate}</td>
+                        <td><input type="checkbox" name="attendance-${formattedDate}" value="Present" onclick="toggleCheckbox(this)" ${savedData === 'Present' ? 'checked' : ''}></td>
+                        <td><input type="checkbox" name="attendance-${formattedDate}" value="Absent" onclick="toggleCheckbox(this)" ${savedData === 'Absent' ? 'checked' : ''}></td>
+                    `;
+
+                    tableBody.appendChild(row);
+                }
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+        }
+
+        function toggleCheckbox(selectedCheckbox) {
+            let row = selectedCheckbox.parentElement.parentElement;
+            let checkboxes = row.querySelectorAll("input[type='checkbox']");
+            
+            checkboxes.forEach(checkbox => {
+                if (checkbox !== selectedCheckbox) {
+                    checkbox.checked = false;
+                }
+            });
+
+            // Save attendance selection to local storage
+            let date = row.cells[0].innerText;
+            localStorage.setItem(date, selectedCheckbox.value);
+        }
+
+        function goHome() {
+            window.location.href = "Jungkook.html"; 
+        }
+
+        generateAttendance(new Date("2025-04-01"), new Date("2025-04-30"));
+    </script>
+
+</body>
+</html>
